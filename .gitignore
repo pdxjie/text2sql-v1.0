@@ -15,3 +15,11 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+text2sql-web/node_modules/**
+text2sql-web/.idea/**
+text2sql-web/README.md
+text2sql-web/README.zh-CN.md
+.idea/**
+text2sql-api/.idea/**
+text2sql-api/target/**
+node_modules/

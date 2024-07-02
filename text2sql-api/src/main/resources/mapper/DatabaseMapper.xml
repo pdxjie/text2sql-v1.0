@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pdx.mapper.DatabaseMapper">
+
+    <select id="selectSchemaInfo" resultType="com.pdx.model.dto.SchemaDetailResponse">
+        SELECT
+            d.database_name,
+            s.schema_name,
+            s.remark,
+            d.id,
+            s.id schema_id,
+            f.id,
+            f.field_name,
+            f.field_type,
+            f.field_default,
+            f.field_comment,
+            f.primary_key,
+            f.is_null,
+            f.is_deleted,
+            f.create_time,
+            f.update_time
+        FROM t_database d
+                 JOIN t_schema s ON d.id = s.data_id
+                 JOIN t_field f ON s.id = f.schema_id
+        WHERE d.id = #{databaseId}
+        AND s.id IN
+        <foreach collection="schemaIds" item="schemaId" separator="," open="(" close=")">
+            #{schemaId}
+        </foreach>
+    </select>
+</mapper>
