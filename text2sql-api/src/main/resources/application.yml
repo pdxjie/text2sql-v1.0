@@ -26,9 +26,9 @@ spring:
 #        min-idle: 0
   # Mail配置
   mail:
-    host: smtp.163.com
-    password: OFNEJLTGIUYMJVTS
-    username: pdx_jie@163.com
+    host: xxxx
+    password: xxxxx
+    username: xxxxx
     default-encoding: UTF-8
     port: 465
     properties:
