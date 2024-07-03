@@ -30,7 +30,7 @@
 | <a href="https://github.com/pdxjie/text2sql-v1.0/tree/master/text2sql-web">🛸Text2SQL 视图端</a> | NL2SQL 用户交互视图     | <a href="https://github.com/pdxjie/text2sql-v1.0/tree/master/text2sql-web">text2sql-web</a> |
 | <a href="https://github.com/pdxjie/text2sql-v1.0/tree/master/text2sql-api">🛰️ Text2SQL 服务端</a> | NL2SQL 核心业务实现逻辑 | <a href="https://github.com/pdxjie/text2sql-v1.0/tree/master/text2sql-api">text2sql-api</a> |
 
-TexT2SQL 支持用户输入的表结构和需求，**从而神奇地生成具体的 SQL 语句！**并且可以导入数据库和表结构，选择具体的表，生成独特的 SQL 语句。致力于解放开发同学的双手，扎根于更深层次的业务中。
+TexT2SQL 支持用户输入的表结构和需求，**从而神奇地生成具体的 SQL 语句！** 并且可以导入数据库和表结构，选择具体的表，生成独特的 SQL 语句。致力于解放开发同学的双手，扎根于更深层次的业务中。
 
 <h2>TexT2SQL 是什么？</h2>
 
