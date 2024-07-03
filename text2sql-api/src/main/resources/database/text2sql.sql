@@ -82,6 +82,10 @@ CREATE TABLE `role`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
+INSERT INTO `text2sql`.`role`(`id`, `role_name`, `role_code`, `status`, `remark`, `create_time`, `update_time`) VALUES ('0', '游客', 'VISITOR', 0, '游客角色', '2023-12-14 00:17:12', '2023-12-14 00:17:16');
+INSERT INTO `text2sql`.`role`(`id`, `role_name`, `role_code`, `status`, `remark`, `create_time`, `update_time`) VALUES ('1', '普通用户', 'USER', 0, '普通用户角色', '2023-12-14 00:17:55', '2023-12-14 00:17:58');
+INSERT INTO `text2sql`.`role`(`id`, `role_name`, `role_code`, `status`, `remark`, `create_time`, `update_time`) VALUES ('2', '管理员', 'ADMIN', 0, '管理员角色', '2023-12-14 00:18:19', '2023-12-14 00:18:21');
+
 -- ----------------------------
 -- Table structure for t_database
 -- ----------------------------
