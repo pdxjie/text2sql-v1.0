@@ -155,6 +155,7 @@
         <a-card title="Generate SQL" style="border-radius: 8px;height: calc(100vh - 210px);overflow-y: auto">
           <a-button type="primary" ghost slot="extra" icon="solution" @click="executeRecords">执行记录</a-button>
           <a-button type="primary" slot="extra" icon="code" @click="randomExample" style="margin-left: 10px">模范示例</a-button>
+          <a-button type="primary" slot="extra" icon="question-circle" @click="startUserGuide" class="margin-l-10">教我使用</a-button>
           <!-- 选择 Schema -->
           <div class="schema-body">
             <div class="display-flex align-items margin-b-10" style="gap: 10px;">
@@ -164,6 +165,7 @@
             <a-form :form="schemaForm" v-if="!schema">
               <a-form-item>
                 <a-textarea
+                  ref="step1"
                   placeholder="请输入您所需要的数据库表结构, 例如：create table User( id, username, password, phone, brith)"
                   :auto-size="{ minRows: 5, maxRows: 5 }"
                   v-decorator="['schemas', { rules: [{ required: true, message: '数据库表内容不能为空！' }] }]"
@@ -193,6 +195,7 @@
           <a-form :form="form">
             <a-form-item label="写下想要实现的需求">
               <a-textarea
+                ref="step2"
                 placeholder="写下您想要通过 SQL 实现的需求"
                 :auto-size="{ minRows: 5, maxRows: 5 }"
                 v-decorator="['demand', { rules: [{ required: true, message: '需求内容不能为空！' }] }]"
@@ -200,10 +203,18 @@
             </a-form-item>
           </a-form>
           <div class="w-full display-flex align-items justify-between" style="gap: 6px">
-            <a-badge count="限时免费" style="width: 48%">
-              <a-button class="ai-btn" style="width: 100%" :icon="analysising ? 'loading' : 'thunderbolt'" :disabled="analysising" @click="startAnalysis">开始分析</a-button>
+            <a-badge count="限时免费" style="width: 48%" ref="step3">
+              <a-button
+                ref="step4"
+                class="ai-btn"
+                style="width: 100%"
+                :icon="analysising ? 'loading' : 'thunderbolt'"
+                :disabled="analysising"
+                @click="startAnalysis">
+                开始分析
+              </a-button>
             </a-badge>
-            <a-select v-model="currentType" style="width: 48%;border-radius: 10px;" @change="handleChangeSqlType">
+            <a-select v-model="currentType" style="width: 48%;border-radius: 10px;" @change="handleChangeSqlType" ref="step3">
               <a-select-option :value="item.id" v-for="item in sqlTypes" :key="item.id">
                 {{ item.value }}
               </a-select-option>
@@ -279,6 +290,8 @@ import { fieldTypes } from '@/constants/fieldTypes'
 import { v4 as uuidv4 } from 'uuid'
 import { eventSource } from '@/utils/eventSource'
 import MonacoEditor from '@/components/MonacoEditor/index.vue'
+import { startGuide } from '@/utils/guide'
+
 export default {
   name: 'Dashboard',
   components: {
@@ -821,6 +834,47 @@ export default {
     },
     handleRemoveField () {
       this.$message.warning('新功能正在开发中，敬请期待！')
+    },
+    startUserGuide () {
+      const steps = [
+        {
+          element: this.$refs.step1.$el,
+          popover: {
+            title: '第一步',
+            description: '在此输入你的表结构，例如：create table User( id, username, password, phone, brith)',
+            side: 'left',
+            align: 'start'
+          }
+        },
+        {
+          element: this.$refs.step2.$el,
+          popover: {
+            title: '第二步',
+            description: '描述你的需求，例如多表联查、分组、排序等',
+            side: 'left',
+            align: 'start'
+          }
+        },
+        {
+          element: this.$refs.step3.$el,
+          popover: {
+            title: '第三步',
+            description: '选择你的数据库类型，支持 Mysql、PostgreSQL、SQLServer、Oracle',
+            side: 'left',
+            align: 'start'
+          }
+        },
+        {
+          element: this.$refs.step4.$el,
+          popover: {
+            title: '最后一步',
+            description: '点击此按钮，开始分析并生成 SQL 语句',
+            side: 'left',
+            align: 'start'
+          }
+        }
+      ]
+      startGuide(steps)
     }
   }
 }

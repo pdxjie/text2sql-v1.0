@@ -16,6 +16,7 @@ import './utils/filter' // global filter
 import './components/global.less'
 import { Dialog } from '@/components'
 import '@/styles/common.less'
+import '@/styles/guide.less'
 Vue.config.productionTip = false
 
 // mount axios Vue.$http and this.$http
