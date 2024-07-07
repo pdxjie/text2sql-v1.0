@@ -40,7 +40,15 @@ public enum ResponseCode {
 
     LESS_THAN_FOUR(214, "批量上传图片不得超过四张"),
 
-    USERINFO_IS_NOT_EXISTS(207, "用户名或密码错误，请重试！");
+    USERINFO_IS_NOT_EXISTS(207, "用户名或密码错误，请重试！"),
+
+    // 其他状态码...
+    CONN_INFO_NOT_SUPPORT_EMPTY(215, "连接信息不能存在为空项!"),
+
+    CONN_TYPE_NOT_SUPPORT(216, "当前连接类型暂不支持!"),
+
+    CONN_FAIL(217, "连接失败，请检查连接信息!"),
+    ;
 
 
     // 状态码

@@ -200,14 +200,15 @@
             </a-form-item>
           </a-form>
           <div class="w-full display-flex align-items justify-between" style="gap: 6px">
-            <a-badge count="限时免费" style="width: 48%">
+            <a-badge count="限时免费" style="width: 30%">
               <a-button class="ai-btn" style="width: 100%" :icon="analysising ? 'loading' : 'thunderbolt'" :disabled="analysising" @click="startAnalysis">开始分析</a-button>
             </a-badge>
-            <a-select v-model="currentType" style="width: 48%;border-radius: 10px;" @change="handleChangeSqlType">
+            <a-select v-model="currentType" style="width: 30%;border-radius: 10px;" @change="handleChangeSqlType">
               <a-select-option :value="item.id" v-for="item in sqlTypes" :key="item.id">
                 {{ item.value }}
               </a-select-option>
             </a-select>
+            <a-button type="primary" style="width: 30%;border-radius: 10px;height: 40px" ghost icon="deployment-unit" @click="toWorkFlow">SQL 工作流</a-button>
           </div>
           <a-divider>最终结果</a-divider>
           <div class="content">
@@ -821,6 +822,21 @@ export default {
     },
     handleRemoveField () {
       this.$message.warning('新功能正在开发中，敬请期待！')
+    },
+    // 跳转到工作流
+    toWorkFlow () {
+      // 只有登录之后才能跳转到工作流
+      if (!this.isLogin) {
+        this.$message.warning('请先登录')
+        return
+      }
+      if (!this.schema) {
+        this.$message.warning('请切换工作模式')
+        return
+      }
+      this.$router.push({
+        name: 'Workflow'
+      })
     }
   }
 }

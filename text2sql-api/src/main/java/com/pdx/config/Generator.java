@@ -53,7 +53,7 @@ public class Generator {
         // 5、策略配置
         StrategyConfig strategy = new StrategyConfig();
         //strategy.setInclude("ks_\\w*");设置要映射的表名
-        strategy.setInclude("user_database");
+        strategy.setInclude("conn_config");
         strategy.setNaming(NamingStrategy.underline_to_camel);//数据库表映射到实体的命名策略
         strategy.setTablePrefix("");//设置表前缀不生成
 

@@ -25,6 +25,11 @@ export const asyncRouterMap = [
             name: 'Workplace',
             component: () => import('@/views/dashboard/Workplace'),
             meta: { title: 'Generate', keepAlive: true }
+          },
+          {
+            path: 'workflow',
+            name: 'Workflow',
+            component: () => import('@/views/flow/index.vue')
           }
         ]
       },
