@@ -1,12 +1,15 @@
 <template>
   <div class="user-wrapper">
-    <div class="content-box" :style="{ 'margin-right': isMobile() ? '30px' : '' }">
-      <a-tooltip placement="bottomRight">
-        <template slot="title">
-          <span>前往登录, 体验更多功能</span>
-        </template>
-        <a-avatar v-if="userInfo" @click="toLogo" icon="user" style="cursor: pointer"/>
-      </a-tooltip>
+    <div class="content-box display-flex align-items" :style="{ 'margin-right': isMobile() ? '30px' : '' }">
+      <div class="display-flex align-items">
+        <a-button :icon="v2 ? 'vertical-left' : 'vertical-right'" ghoat @click="toNewTheme">{{ v2 ? '返回旧版' : '前往新版' }}</a-button>
+        <a-tooltip placement="bottomRight">
+          <template slot="title">
+            <span>前往登录, 体验更多功能</span>
+          </template>
+          <a-avatar v-if="userInfo" @click="toLogo" icon="user" style="cursor: pointer"/>
+        </a-tooltip>
+      </div>
       <div class="position-relative" v-if="token && roles !== 'ADMIN'">
         <a-dropdown :trigger="['click']">
           <span class="display-flex align-items pointer" style="gap: 10px">
@@ -69,7 +72,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['nickname', 'avatar', 'userInfo', 'token']),
+    ...mapGetters(['nickname', 'avatar', 'userInfo', 'token', 'v2']),
     ...mapState({
       device: state => state.app.device
     }),
@@ -100,6 +103,18 @@ export default {
   },
   methods: {
     ...mapActions(['Logout']),
+    toNewTheme () {
+      if (this.v2) {
+        this.$router.push({
+          name: 'Workplace'
+        })
+      } else {
+        this.$router.push({
+          name: 'NewTheme'
+        })
+      }
+      this.$store.commit('TOGGLE_THEME_V2', !this.v2)
+    },
     handleLogout () {
       this.visible = false
       this.$confirm({

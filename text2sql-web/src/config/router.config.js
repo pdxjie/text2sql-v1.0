@@ -30,6 +30,11 @@ export const asyncRouterMap = [
             path: 'workflow',
             name: 'Workflow',
             component: () => import('@/views/flow/index.vue')
+          },
+          {
+            path: 'theme/v2',
+            name: 'NewTheme',
+            component: () => import('@/views/dashboard/v2/workplace.vue')
           }
         ]
       },
