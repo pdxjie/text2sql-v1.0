@@ -48,6 +48,10 @@ public enum ResponseCode {
     CONN_TYPE_NOT_SUPPORT(216, "当前连接类型暂不支持!"),
 
     CONN_FAIL(217, "连接失败，请检查连接信息!"),
+
+    CONN_PASS_ERROR(218, "连接密码错误，请检查!"),
+
+    CONN_NOT_EXIST(219, "连接不存在!"),
     ;
 
 

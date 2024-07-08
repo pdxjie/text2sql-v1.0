@@ -1,5 +1,6 @@
 package com.pdx.service.impl;
 
+import com.pdx.config.DatabaseComponent;
 import com.pdx.model.entity.ConnConfig;
 import com.pdx.mapper.ConnConfigMapper;
 import com.pdx.model.vo.ConnVo;
@@ -13,6 +14,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.Objects;
 
 /**
  * <p>
@@ -27,6 +31,9 @@ public class ConnConfigServiceImpl extends ServiceImpl<ConnConfigMapper, ConnCon
 
     @Resource
     private ProviderService providerService;
+
+    @Resource
+    private DatabaseComponent databaseComponent;
 
     /**
      * 检查连接
@@ -48,5 +55,29 @@ public class ConnConfigServiceImpl extends ServiceImpl<ConnConfigMapper, ConnCon
         }
         DatasourceCheckContext context = new DatasourceCheckContext();
         return context.checkDatasource(connVo, userId);
+    }
+
+    /**
+     * 关闭连接
+     */
+    @Override
+    public Result<?> closeConn() {
+        // 关闭连接
+        String userId = providerService.currentUserId();
+        // 判断当前用户是否存在
+        if (StringUtils.isEmpty(userId)) {
+            return Result.fail(ResponseCode.NEED_LOGIN);
+        }
+        // 关闭连接
+        DataSource dataSource = databaseComponent.getDataSource(userId);
+        if (Objects.nonNull(dataSource)) {
+            try {
+                dataSource.getConnection().close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        // TODO 关闭连接
+        return Result.success();
     }
 }

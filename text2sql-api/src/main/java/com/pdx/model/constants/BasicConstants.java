@@ -1,5 +1,8 @@
 package com.pdx.model.constants;
 
+import java.util.Arrays;
+import java.util.List;
+
 /*
  * @Author 派同学
  * @Description 基础常量
@@ -29,4 +32,7 @@ public interface BasicConstants {
 
     // 内网IP
     public static final String DEFAULT_ADDRESS = "内网IP";
+
+    // 默认需要过滤掉的数据库
+    public static final List<String> FILTER_DATA_BASES = Arrays.asList("information_schema", "performance_schema", "mysql", "sys");
 }

@@ -22,4 +22,9 @@ public interface ConnConfigService extends IService<ConnConfig> {
      * @return 结果
      */
     Result<?> checkConn(ConnVo connVo);
+
+    /**
+     * 关闭连接
+     */
+    Result<?> closeConn();
 }

@@ -36,4 +36,7 @@ public class ConnVo {
 
     @ApiModelProperty(value = "数据源")
     private Integer connSource;
+
+    @ApiModelProperty(value = "触发类型")
+    private String type;
 }

@@ -9,11 +9,7 @@ import com.pdx.response.Result;
 import com.pdx.service.ConnConfigService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -36,6 +32,15 @@ public class ConnConfigController {
     public Result<?> check(@RequestBody(required = false) ConnVo connVo) {
         return connConfigService.checkConn(connVo);
     }
+
+    @GetMapping("/close")
+    @CheckRoles(value = {RoleType.ADMIN, RoleType.USER}, checkType = CheckType.OR)
+    @ApiOperation(value = "关闭连接", notes = "关闭连接")
+    public Result<?> closeConn() {
+        return connConfigService.closeConn();
+    }
+
+    @PostMapping
 
 }
 

@@ -27,13 +27,13 @@ public class DatabaseComponent {
         return dataSources.get(userId);
     }
 
+    /**
+     * 创建数据源连接
+     * @param connVo 连接信息
+     * @return 数据源连接
+     */
     public DataSource createDataSource(ConnVo connVo) {
-        String url = String.format("jdbc:%s://%s:%s/%s",
-                    SQLType.getType(connVo.getConnSource()).toLowerCase(),
-                    connVo.getConnHost(),
-                    connVo.getConnPort(),
-                    connVo.getConnUser()
-                );
+        String url = String.format("jdbc:%s://%s:%s", SQLType.getType(connVo.getConnSource()).toLowerCase(), connVo.getConnHost(), connVo.getConnPort());
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(url);
         config.setUsername(connVo.getConnUser());
