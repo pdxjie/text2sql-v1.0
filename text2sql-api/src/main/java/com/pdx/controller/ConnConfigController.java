@@ -39,8 +39,5 @@ public class ConnConfigController {
     public Result<?> closeConn() {
         return connConfigService.closeConn();
     }
-
-    @PostMapping
-
 }
 
