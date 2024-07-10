@@ -27,4 +27,16 @@ public interface ConnConfigService extends IService<ConnConfig> {
      * 关闭连接
      */
     Result<?> closeConn();
+
+    Result<?> getDatabases();
+
+    Result<?> connDatasource(String connId);
+
+    /**
+     * 获取自定义分组列表
+     *
+     * @return 结果
+     */
+    Result<?> getCustomGroupList();
+
 }

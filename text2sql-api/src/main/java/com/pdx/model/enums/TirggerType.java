@@ -22,6 +22,10 @@ public enum TirggerType {
     UPDATE,
 
     // 删除
-    DELETE;
+    DELETE,
+
+    // 连接
+    CONNECT
+    ;
 
 }

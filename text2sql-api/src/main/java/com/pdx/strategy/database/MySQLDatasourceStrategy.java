@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.pdx.model.constants.BasicConstants.FILTER_DATA_BASES;
+import static com.pdx.model.constants.BasicConstants.*;
 
 
 /**
@@ -61,9 +61,12 @@ public class MySQLDatasourceStrategy implements DataSourceCheckStrategy {
         DataSource dataSource = databaseComponent.getDataSource(userId);
         // 判断当前数据源连接是否存在
         ConnConfig connEntity = connConfigService.getOne(new QueryWrapper<ConnConfig>().eq("user_id", userId).eq("conn_host", connVo.getConnHost()).eq("conn_port", connVo.getConnPort()).eq("conn_user", connVo.getConnUser()));
+        // 连接 ID
+        String connId = "";
         // 判断数据源是否为空
         if (Objects.isNull(dataSource)) {
             if (Objects.nonNull(connEntity)) {
+                connId = connEntity.getId();
                 // 判断密码是否正确
                 if (StringUtils.isNotEmpty(connEntity.getConnPass()) && !Aes128Util.decrypt(DEFAULT_KEY, connEntity.getConnPass()).equals(connVo.getConnPass())) {
                     return Result.fail(ResponseCode.CONN_PASS_ERROR);
@@ -109,17 +112,20 @@ public class MySQLDatasourceStrategy implements DataSourceCheckStrategy {
                     // 保存数据源连接信息
                     ConnConfig config = new ConnConfig();
                     BeanUtils.copyProperties(connVo, config);
-                    config.setId(UUID.randomUUID().toString());
+                    String configId = UUID.randomUUID().toString();
+                    connId = configId;
+                    config.setId(configId);
                     config.setUserId(userId);
                     config.setCreateTime(new Date());
                     config.setUpdateTime(new Date());
+                    config.setIsDeleted(ZERO_VALUE);
                     // 判断是否需要保存密码
                     if (connVo.isSavePass()) {
                         String encrypt = Aes128Util.encrypt(DEFAULT_KEY, connVo.getConnPass());
-                        config.setSavePass(1);
+                        config.setSavePass(ONE_VALUE);
                         config.setConnPass(encrypt);
                     } else {
-                        config.setSavePass(0);
+                        config.setSavePass(ZERO_VALUE);
                         config.setConnPass(null);
                     }
                     // 保存数据源连接信息
@@ -133,6 +139,7 @@ public class MySQLDatasourceStrategy implements DataSourceCheckStrategy {
                 // 过滤不需要的数据库
                 databases = databases.stream().filter(database -> !FILTER_DATA_BASES.contains(database)).collect(Collectors.toList());
                 Map<String, Object> resultMap = new HashMap<>();
+                resultMap.put("connId", connId);
                 resultMap.put("databases", databases);
                 return Result.success(resultMap);
             } catch (Exception e) {

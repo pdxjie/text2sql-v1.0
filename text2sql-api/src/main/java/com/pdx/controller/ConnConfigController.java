@@ -39,5 +39,26 @@ public class ConnConfigController {
     public Result<?> closeConn() {
         return connConfigService.closeConn();
     }
+
+    @GetMapping("/databases")
+    @CheckRoles(value = {RoleType.ADMIN, RoleType.USER}, checkType = CheckType.OR)
+    @ApiOperation(value = "获取数据库列表", notes = "获取数据库列表")
+    public Result<?> getDatabases() {
+        return connConfigService.getDatabases();
+    }
+
+    @GetMapping("/{connId}")
+    @CheckRoles(value = {RoleType.ADMIN, RoleType.USER}, checkType = CheckType.OR)
+    @ApiOperation(value = "连接数据源", notes = "连接数据源")
+    public Result<?> connDatasource(@PathVariable("connId") String connId) {
+        return connConfigService.connDatasource(connId);
+    }
+
+    @GetMapping("/custom/group")
+    @CheckRoles(value = {RoleType.ADMIN, RoleType.USER}, checkType = CheckType.OR)
+    @ApiOperation(value = "获取自定义分组列表", notes = "获取自定义分组列表")
+    public Result<?> getCustomGroupList() {
+        return connConfigService.getCustomGroupList();
+    }
 }
 

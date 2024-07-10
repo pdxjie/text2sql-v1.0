@@ -35,4 +35,13 @@ public interface BasicConstants {
 
     // 默认需要过滤掉的数据库
     public static final List<String> FILTER_DATA_BASES = Arrays.asList("information_schema", "performance_schema", "mysql", "sys");
+
+    // 1
+    public static final Integer ONE_VALUE = 1;
+
+    // 0
+    public static final Integer ZERO_VALUE = 0;
+
+    // 默认分组 ID
+    public static final String DEFAULT_GROUP_ID = "000000-000000-000000-000000-000000";
 }

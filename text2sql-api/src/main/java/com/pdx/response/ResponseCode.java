@@ -52,6 +52,8 @@ public enum ResponseCode {
     CONN_PASS_ERROR(218, "连接密码错误，请检查!"),
 
     CONN_NOT_EXIST(219, "连接不存在!"),
+
+    USER_NOT_AUTHORIZED(220, "用户未授权!"),
     ;
 
 

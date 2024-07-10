@@ -16,13 +16,13 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author 派同学
- * @since 2024-07-07
+ * @since 2024-07-10
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("conn_config")
-@ApiModel(value="ConnConfig对象", description="")
-public class ConnConfig implements Serializable {
+@TableName("group_config")
+@ApiModel(value="GroupConfig对象", description="")
+public class GroupConfig implements Serializable {
 
     private static final long serialVersionUID=1L;
 
@@ -30,23 +30,11 @@ public class ConnConfig implements Serializable {
     @TableId(value = "id", type = IdType.ID_WORKER_STR)
     private String id;
 
-    @ApiModelProperty(value = "连接名称")
-    private String connNick;
+    @ApiModelProperty(value = "分组 ID")
+    private String groupId;
 
-    @ApiModelProperty(value = "主机")
-    private String connHost;
-
-    @ApiModelProperty(value = "端口")
-    private String connPort;
-
-    @ApiModelProperty(value = "用户名")
-    private String connUser;
-
-    @ApiModelProperty(value = "密码")
-    private String connPass;
-
-    @ApiModelProperty(value = "保存密码")
-    private Integer savePass;
+    @ApiModelProperty(value = "连接 ID")
+    private String connId;
 
     private Date createTime;
 
@@ -55,15 +43,6 @@ public class ConnConfig implements Serializable {
     @ApiModelProperty(value = "是否删除")
     private Integer isDeleted;
 
-    @ApiModelProperty(value = "初始数据库")
-    private String initDatabase;
-
     @ApiModelProperty(value = "用户 ID")
     private String userId;
-
-    @ApiModelProperty(value = "数据源驱动")
-    private Integer connDriver;
-
-    @ApiModelProperty(value = "连接分组 ID")
-    private String groupId;
 }

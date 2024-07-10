@@ -2,7 +2,7 @@
   <div class="demo-split">
     <Split v-model="split3" min="230px">
       <div slot="right" class="demo-split-pane no-padding">
-        <Split v-model="split4" mode="vertical">
+        <Split v-model="split4" mode="vertical" min="400px">
           <div slot="top" class="demo-split-pane">
             <MonacoEditor
               :read-only="false"
@@ -18,51 +18,59 @@
         </Split>
       </div>
       <div slot="left" class="demo-left-split-pane">
-        <a-directory-tree multiple default-expand-all>
-          <a-tree-node key="0-0" title="parent 0">
-            <a-tree-node key="0-0-0" title="leaf 0-0">
-              <a-tree-node key="0-0-0" title="leaf 0-0" is-leaf />
-            </a-tree-node>
-            <a-tree-node key="0-0-1" title="leaf 0-1" is-leaf />
-          </a-tree-node>
-          <a-tree-node key="0-1" title="parent 1">
-            <a-tree-node key="0-1-0" title="leaf 1-0" is-leaf />
-            <a-tree-node key="0-1-1" title="leaf 1-1" is-leaf />
-          </a-tree-node>
-        </a-directory-tree>
-        <a-popover
-          placement="right"
-          v-click-outside="disappearSqlTypePopover"
-          :visible="sqlTypeVisible"
-          trigger="click"
-          :overlayStyle="{ width: '120px' }"
-          :getPopupContainer=" triggerNode => {
-            return triggerNode.parentNode
-          }">
-          <template slot="content">
-            <div
-              style="height: 30px;line-height: 30px;gap: 10px;cursor: pointer;padding: 10px"
-              class="display-flex align-items active-sql"
-              @click="selectSqlType(sql)"
-              v-for="sql in sqlTypes"
-              :key="sql.type">
-              <img :src="sql.icon" alt="mysql" style="height: 20px;">
-              <span>{{ sql.name }}</span>
+        <a-tree
+          ref="treeRef"
+          :load-data="onLoadData"
+          v-if="connections.length > 0"
+          :tree-data="connections"
+          :blockNode="true">
+          <template slot="custom" slot-scope="item">
+            <div class="display-flex align-items justify-between">
+              <a-dropdown :trigger="['contextmenu']">
+                <span>
+                  <a-icon :type="fetchIcon(item)"></a-icon>
+                  <span style="margin-left: 5px">{{ item.title }}</span>
+                </span>
+                <template #overlay>
+                  <a-menu @click="({ key: menuKey }) => onContextMenuClick(treeKey, menuKey)">
+                    <a-sub-menu key="test" v-if="item.level === 'GROUP'">
+                      <span slot="title">
+                        <span style="margin-right: 10px">新建连接</span>
+                      </span>
+                      <a-menu-item v-for="sql in sqlTypes" :key="sql.type" @click="selectSqlType(sql)">
+                        <div class="display-flex align-items" style="gap: 10px">
+                          <img :src="sql.icon" alt="mysql" style="height: 15px;">
+                          <span class="font-size-13">{{ sql.name }}</span>
+                        </div>
+                      </a-menu-item>
+                    </a-sub-menu>
+                    <a-menu-item key="1" v-if="item.level !== 'GROUP'" @click="closeConnection">
+                      <a-icon type="close" />
+                      <span class="font-size-13">关闭数据库</span>
+                    </a-menu-item>
+                    <a-menu-item key="2" v-if="item.level !== 'GROUP'">
+                      <a-icon type="plus" />
+                      <span class="font-size-13">新建数据库</span>
+                    </a-menu-item>
+                    <a-menu-item key="3" v-if="item.level !== 'GROUP'">
+                      <a-icon type="edit" />
+                      <span class="font-size-13">编辑数据库</span>
+                    </a-menu-item>
+                    <a-menu-item key="4" v-if="item.level !== 'GROUP'">
+                      <a-icon type="undo" />
+                      <span class="font-size-13">刷新</span>
+                    </a-menu-item>
+                    <a-menu-divider v-if="item.level !== 'GROUP'"/>
+                    <a-menu-item key="4" class="remove-operate" v-if="item.level !== 'GROUP'">
+                      <a-icon type="delete" style="color: #ff4d4f"/>
+                      <span class="font-size-13">删除数据库</span>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
             </div>
           </template>
-          <a-tooltip placement="topLeft">
-            <template slot="title">
-              <span>新建连接</span>
-            </template>
-            <a-button
-              type="primary"
-              shape="circle"
-              icon="api"
-              ghost
-              @click="openSqlTypeSelect"
-              style="position: absolute;bottom: 10px;left: 10px;"/>
-          </a-tooltip>
-        </a-popover>
+        </a-tree>
       </div>
     </Split>
     <!-- 连接弹窗 -->
@@ -130,7 +138,7 @@
 
 <script>
 import ClickOutside from 'vue-click-outside'
-import { dbConnectionApi } from '@/api/connect'
+import { closeConn, customGroups, dbConnectionApi } from '@/api/connect'
 import MonacoEditor from '@/components/MonacoEditor/index.vue'
 export default {
   name: 'NewTheme',
@@ -171,24 +179,71 @@ export default {
       connectForm: this.$form.createForm(this), // 连接表单
       savePass: false, // 是否保存密码
       connectMocking: false, // 连接测试中
-      resultCode: '' // 查询结果
+      resultCode: '', // 查询结果
+      connections: [] // 连接列表
+    }
+  },
+  created () {
+    this.initConnections()
+  },
+  computed: {
+    // 根据类型获取图标
+    fetchIcon () {
+      return function (item) {
+        if (item.level === 'CONNECTION') {
+          return 'cloud-sync'
+        } else if (item.level === 'DATABASE') {
+          return 'database'
+        } else if (item.level === 'GROUP') {
+          return 'folder-open'
+        } else {
+          return 'table'
+        }
+      }
     }
   },
   methods: {
-    openSqlTypeSelect () {
-      this.sqlTypeVisible = true
+    // 初始化连接列表
+    async initConnections () {
+      const { data } = await customGroups()
+      data.configs.forEach((item) => {
+        this.$set(item, 'scopedSlots', {
+          title: 'custom'
+        })
+        item.children && item.children.forEach(child => {
+          this.$set(child, 'scopedSlots', {
+            title: 'custom'
+          })
+        })
+      })
+      this.connections = data.configs
     },
+    onContextMenuClick (treeKey, menuKey) {
+      console.log(treeKey, menuKey)
+    },
+    onLoadData (treeNode) {
+      return new Promise(resolve => {
+        if (treeNode.dataRef.children) {
+          resolve()
+          return
+        }
+        setTimeout(() => {
+          // TODO: 异步获取数据
+          resolve()
+        }, 1000)
+      })
+    },
+    // 选择连接类型
     selectSqlType (sql) {
       this.currentType = sql
       this.sqlTypeVisible = false
       this.connectionVisible = true
     },
-    disappearSqlTypePopover () {
-      this.sqlTypeVisible = false
-    },
+    // 关闭连接弹窗
     cancelConnect () {
       this.connectionVisible = false
     },
+    // 确认连接
     confirmConnect () {
       this.connectForm.validateFields(async (err, values) => {
         if (!err) {
@@ -208,6 +263,7 @@ export default {
         }
       })
     },
+    // 连接测试
     connectMock () {
       this.connectForm.validateFields(async (err, values) => {
         if (!err) {
@@ -226,6 +282,16 @@ export default {
         }
       })
     },
+    // 关闭连接
+    async closeConnection () {
+      const data = await closeConn()
+      if (data.code === 200) {
+        this.$message.success('关闭成功')
+      } else {
+        this.$message.error('关闭失败, 未建立数据库连接!')
+      }
+    },
+    // 切换保存密码
     changeSavePass (e) {
       this.savePass = e.target.checked
     }
@@ -273,5 +339,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.remove-operate {
+  background: #fff1f0!important;
 }
 </style>
