@@ -4,6 +4,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.pdx.model.enums.FieldType;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @Author: IT 派同学
@@ -128,6 +129,22 @@ public class StringUtil {
             case 1: return "INT";
             default: return "UNKNOWN";
         }
+    }
+
+    /**
+     * 将多个字符串数组合并为一个字符串，每个数组元素之间用指定的分隔符分隔。
+     * @param args 字符串数组
+     * @return 合并后的字符串
+     */
+    public static String joinString(String ...args) {
+        if (args == null || args.length == 0) {
+            return StringUtils.EMPTY;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < args.length; i++) {
+            sb.append(args[i]);
+        }
+        return sb.toString();
     }
 
 

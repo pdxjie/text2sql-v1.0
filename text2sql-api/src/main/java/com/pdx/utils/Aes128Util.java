@@ -20,6 +20,8 @@ public class Aes128Util {
 
     private static final String ALGORITHM_NAME = "AES/ECB/PKCS5Padding";
 
+    private static final String DEFAULT_KEY = "1234567890abcdef";
+
     /**
      * 加密
      *
@@ -61,5 +63,13 @@ public class Aes128Util {
             log.error("AES128Utils.encrypt decrypt {}", e.getMessage(), e);
         }
         return content;
+    }
+
+    public static void main(String[] args) {
+        String key = "1234567890abcdef";
+        String encrypt = encrypt(key, "123456");
+        System.out.println(encrypt + "秘闻");
+        String decrypt = decrypt(key, encrypt);
+        System.out.println(decrypt);
     }
 }

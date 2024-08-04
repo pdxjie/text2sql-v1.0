@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pdx.model.constants.RoleType;
-import com.pdx.model.entity.Role;
-import com.pdx.model.entity.User;
-import com.pdx.model.entity.UserRole;
+import com.pdx.model.entity.*;
 import com.pdx.exception.BusinessException;
 import com.pdx.mapper.RoleMapper;
 import com.pdx.mapper.UserMapper;
@@ -15,6 +13,7 @@ import com.pdx.model.dto.UserDto;
 import com.pdx.model.vo.*;
 import com.pdx.response.ResponseCode;
 import com.pdx.response.Result;
+import com.pdx.service.GroupConfigService;
 import com.pdx.service.UserService;
 import com.pdx.utils.*;
 import org.apache.commons.lang3.StringUtils;
@@ -73,6 +72,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Resource
     private SecurityUtil securityUtil;
 
+    @Resource
+    private GroupConfigService groupConfigService;
+
     @Override
     public List<String> currentRoles(String userId) {
         List<UserRole> userRoles = userRoleMapper.selectList(new QueryWrapper<UserRole>().eq("user_id", userId));
@@ -82,8 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 拿到所有的角色 ID
         List<String> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
         // 根据角色 ID 查询出所有的角色码
-        List<String> roleCodes = roleMapper.selectBatchIds(roleIds).stream().map(Role::getRoleCode).collect(Collectors.toList());
-        return roleCodes;
+        return roleMapper.selectBatchIds(roleIds).stream().map(Role::getRoleCode).collect(Collectors.toList());
     }
 
     @Override
@@ -169,14 +170,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 判断邮箱是否存在
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         User userOne = getOne(wrapper.eq("email", email));
+        // 如果不存在 则创建用户
         if (null == userOne) {
             String userId = UUID.randomUUID().toString();
             String userRoleId = UUID.randomUUID().toString();
-            String uuId = UUID.randomUUID().toString().substring(1, 5);
             userOne = User.builder().id(userId).nickName(verificationCode.generateChineseName()).avatar(DEFAULT_AVATAR).email(email).createTime(new Date()).updateTime(new Date()).build();
             save(userOne);
             UserRole userRole = UserRole.builder().roleId(RoleType.USER_KEY).userId(userId).id(userRoleId).createTime(new Date()).updateTime(new Date()).build();
             userRoleMapper.insert(userRole);
+            // 创建默认分组
+            GroupConfig groupConfig = new GroupConfig();
+            groupConfig.setId(UUID.randomUUID().toString());
+            groupConfig.setUserId(userId);
+            groupConfig.setGroupId(DEFAULT_GROUP_ID);
+            groupConfig.setIsDeleted(0);
+            groupConfig.setCreateTime(new Date());
+            groupConfig.setUpdateTime(new Date());
+            groupConfigService.save(groupConfig);
         }
         // 判断是否多次发送验证码
         boolean isExist = StringUtils.isNotEmpty(userOne.getCode());

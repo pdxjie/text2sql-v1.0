@@ -24,7 +24,8 @@ const app = {
     autoHideHeader: false,
     color: null,
     weak: false,
-    multiTab: true
+    multiTab: true,
+    v2: false // 新版本
   },
   mutations: {
     SET_SIDEBAR_TYPE: (state, type) => {
@@ -74,6 +75,9 @@ const app = {
     TOGGLE_MULTI_TAB: (state, bool) => {
       Vue.ls.set(DEFAULT_MULTI_TAB, bool)
       state.multiTab = bool
+    },
+    TOGGLE_THEME_V2 (state, bool) {
+      state.v2 = bool
     }
   },
   actions: {
@@ -115,6 +119,9 @@ const app = {
     },
     ToggleMultiTab ({ commit }, bool) {
       commit('TOGGLE_MULTI_TAB', bool)
+    },
+    toggleThemeV2 ({ commit }, bool) {
+      commit('TOGGLE_THEME_V2', bool)
     }
   }
 }
