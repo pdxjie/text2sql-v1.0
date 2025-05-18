@@ -15,7 +15,6 @@
 
 > 🥳 前后端全栈项目 Created By IT 派同学
 >
-> 🙌 抢先体验:  http://www.ai-thesis.cc (已更换为其他产品)
 
 <h2>Text2SQL - 用户交互主页</h2>
 
